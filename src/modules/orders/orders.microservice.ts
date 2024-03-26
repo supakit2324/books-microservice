@@ -23,7 +23,7 @@ export class OrdersMicroservice {
     cmd: ORDERS_CMD,
     method: 'create-order',
   })
-  async createOrder(@Payload() payload: ordersInterface): Promise<void> {
+  async createOrder(@Payload() payload: ordersInterface): Promise<ordersInterface> {
     try {
       await this.ordersService.getOrdersModel().create(payload);
     } catch (e) {
@@ -33,6 +33,12 @@ export class OrdersMicroservice {
       throw new InternalServerErrorException({
         message: e?.message ?? e,
       });
+    }
+    return {
+      userId: payload.userId,
+      bookStockId: payload.bookStockId,
+      quantity: payload.quantity,
+      totalPrice: payload.totalPrice
     }
   }
 
