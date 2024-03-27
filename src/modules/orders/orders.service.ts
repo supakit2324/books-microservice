@@ -4,6 +4,8 @@ import { Orders } from './orders.schema';
 import { Aggregate, Model, PipelineStage } from 'mongoose';
 import { DB_CONNECTION_NAME } from 'src/constants';
 import * as dayjs from 'dayjs';
+import { BooksStockInterface } from '../books-stock/interfaces/books-stock.interface';
+import { TopSellCategoryInterface } from './interfaces/top-sell-category.interface';
 
 @Injectable()
 export class OrdersService {
@@ -121,7 +123,7 @@ export class OrdersService {
     return this.ordersModel.aggregate(pipeline);
   }
 
-  async getTopSeller(): Promise<Aggregate<any[]>> {
+  async getTopSeller(): Promise<Aggregate<Orders[]>> {
     const pipeline: PipelineStage[] = [
       {
         $lookup: {
@@ -171,7 +173,7 @@ export class OrdersService {
     return this.ordersModel.aggregate(pipeline);
   }
 
-  async getTopSellByCategory(): Promise<Aggregate<any[]>> {
+  async getTopSellByCategory(): Promise<Aggregate<TopSellCategoryInterface[]>> {
     const pipeline: PipelineStage[] = [
       {
         $lookup: {
