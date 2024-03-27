@@ -7,13 +7,13 @@ import { BooksStockService } from './books-stock.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { BOOKSSTOCK_CMD } from 'src/constants';
 import { BooksStock } from './books-stock.schema';
-import { addBookStock } from './interfaces/add-book-stock.interface';
+import { AddBookStock } from './interfaces/add-book-stock.interface';
 import {
   PaginationInterface,
   PaginationResponseInterface,
 } from 'src/interfaces/pagination.interface';
 import { FindOptionsInterface } from 'src/interfaces/find-options.interface';
-import { updateBooksStockInterface } from './interfaces/update-books-stock.interface';
+import { UpdateBooksStockInterface } from './interfaces/update-books-stock.interface';
 
 @Controller('books-stock')
 export class BooksStockMicroservice {
@@ -59,7 +59,7 @@ export class BooksStockMicroservice {
     cmd: BOOKSSTOCK_CMD,
     method: 'create-book-to-stock',
   })
-  async createBookToStock(@Payload() payload: addBookStock): Promise<void> {
+  async createBookToStock(@Payload() payload: AddBookStock): Promise<void> {
     const { quantity } = payload;
     try {
       await this.booksStockService.getBooksStockModel().create({
@@ -165,7 +165,7 @@ export class BooksStockMicroservice {
     method: 'update-stock',
   })
   async updateStock(
-    @Payload() payload: { bookId: string; body: updateBooksStockInterface },
+    @Payload() payload: { bookId: string; body: UpdateBooksStockInterface },
   ): Promise<void> {
     const { bookId, body } = payload;
     try {

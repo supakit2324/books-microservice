@@ -1,4 +1,4 @@
-export interface updateBookInterface {
+export interface UpdateBookInterface {
   bookId: string;
   bookName: string;
   price: number;

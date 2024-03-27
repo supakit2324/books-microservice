@@ -1,4 +1,4 @@
-export interface updateBooksStockInterface {
+export interface UpdateBooksStockInterface {
   quantity: number;
   quantityBought: number;
   totalOrder: number;

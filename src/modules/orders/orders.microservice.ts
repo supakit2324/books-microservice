@@ -6,7 +6,7 @@ import {
 import { OrdersService } from './orders.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ORDERS_CMD } from 'src/constants';
-import { ordersInterface } from './interfaces/orders.interfaces';
+import { OrdersInterface } from './interfaces/orders.interfaces';
 import {
   PaginationInterface,
   PaginationResponseInterface,
@@ -23,7 +23,7 @@ export class OrdersMicroservice {
     cmd: ORDERS_CMD,
     method: 'create-order',
   })
-  async createOrder(@Payload() payload: ordersInterface): Promise<ordersInterface> {
+  async createOrder(@Payload() payload: OrdersInterface): Promise<OrdersInterface> {
     try {
       await this.ordersService.getOrdersModel().create(payload);
     } catch (e) {

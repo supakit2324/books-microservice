@@ -13,7 +13,7 @@ import {
   PaginationResponseInterface,
 } from 'src/interfaces/pagination.interface';
 import { FindOptionsInterface } from 'src/interfaces/find-options.interface';
-import { updateBookInterface } from './interfaces/update-book.interface';
+import { UpdateBookInterface } from './interfaces/update-book.interface';
 import { BooksStockService } from '../books-stock/books-stock.service';
 
 @Controller('books')
@@ -158,7 +158,7 @@ export class BooksMicroserive {
     method: 'update-book',
   })
   async updateBook(
-    @Payload() payload: { bookId: string; update: updateBookInterface },
+    @Payload() payload: { bookId: string; update: UpdateBookInterface },
   ): Promise<void> {
     const { bookId, update } = payload;
     try {
