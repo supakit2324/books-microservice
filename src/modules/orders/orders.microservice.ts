@@ -13,6 +13,13 @@ import {
 } from 'src/interfaces/pagination.interface';
 import { FindOptionsInterface } from 'src/interfaces/find-options.interface';
 import { Orders } from './orders.schema';
+import { OrdersHistoryInterface } from './interfaces/orders-history.interface';
+import { OrdersUsersInterface } from './interfaces/orders-users-query.interface';
+import { TopUserBoughtInterface } from './interfaces/top-users-bought.interface';
+import { TopSellerInterface } from './interfaces/top-seller.interface';
+import { TopSellCategoryInterface } from './interfaces/top-sell-category.interface';
+import { ReportOrderInterface } from './interfaces/report-order.interface';
+import { OrdersByCategoryInterface } from './interfaces/orders-category.interface';
 
 @Controller('orders')
 export class OrdersMicroservice {
@@ -52,7 +59,7 @@ export class OrdersMicroservice {
       userId: string;
       body: PaginationInterface & FindOptionsInterface<Orders>;
     },
-  ): Promise<PaginationResponseInterface<any>> {
+  ): Promise<PaginationResponseInterface<OrdersHistoryInterface>> {
     const { userId, body } = payload;
     const { page, perPage } = body;
     try {
@@ -88,8 +95,8 @@ export class OrdersMicroservice {
     method: 'get-order-users',
   })
   async getOrderUser(
-    @Payload() payload: PaginationInterface & FindOptionsInterface<Orders>,
-  ): Promise<PaginationResponseInterface<any>> {
+    @Payload() payload: PaginationInterface & FindOptionsInterface<Orders[]>,
+  ): Promise<PaginationResponseInterface<OrdersUsersInterface>> {
     const { page, perPage } = payload;
     try {
       const [records, count] = await Promise.all([
@@ -122,9 +129,9 @@ export class OrdersMicroservice {
     cmd: ORDERS_CMD,
     method: 'get-order-by-category',
   })
-  async getOrderByCategory(): Promise<any> {
-    try {
-      await this.ordersService.getOrderByCategory();
+  async getOrderByCategory(query: { category: string }): Promise<OrdersByCategoryInterface[]> {
+    try { 
+      return await this.ordersService.getOrderByCategory(query.category);
     } catch (e) {
       this.logger.error(
         `catch on get-order-by-category: ${e?.message ?? JSON.stringify(e)}`,
@@ -139,7 +146,7 @@ export class OrdersMicroservice {
     cmd: ORDERS_CMD,
     method: 'get-top-seller',
   })
-  async getTopSeller(): Promise<any> {
+  async getTopSeller(): Promise<TopSellerInterface[]> {
     try {
       return await this.ordersService.getTopSeller();
     } catch (e) {
@@ -156,7 +163,7 @@ export class OrdersMicroservice {
     cmd: ORDERS_CMD,
     method: 'get-top-seller-by-category',
   })
-  async getTopSellerByCategory(): Promise<any> {
+  async getTopSellerByCategory(): Promise<TopSellCategoryInterface[]> {
     try {
       return await this.ordersService.getTopSellByCategory();
     } catch (e) {
@@ -176,7 +183,7 @@ export class OrdersMicroservice {
   async getTopUserBought(
     @Payload()
     payload: PaginationInterface & FindOptionsInterface<Orders>,
-  ): Promise<PaginationResponseInterface<any>> {
+  ): Promise<PaginationResponseInterface<TopUserBoughtInterface>> {
     const { page, perPage } = payload;
     try {
       const [records, count] = await Promise.all([
@@ -210,10 +217,9 @@ export class OrdersMicroservice {
     cmd: ORDERS_CMD,
     method: 'get-report',
   })
-  async getReport(query: { startDay: Date; endDay: Date }): Promise<any> {
+  async getReport(query: { startDay: Date; endDay: Date }): Promise<ReportOrderInterface[]> {
     try {
-      const order = await this.ordersService.getReport(query);
-      return order;
+      return await this.ordersService.getReport(query);
     } catch (e) {
       this.logger.error(
         `catch on getReport: ${e?.message ?? JSON.stringify(e)}`,

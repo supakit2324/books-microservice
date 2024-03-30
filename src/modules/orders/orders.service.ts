@@ -4,8 +4,13 @@ import { Orders } from './orders.schema';
 import { Aggregate, Model, PipelineStage } from 'mongoose';
 import { DB_CONNECTION_NAME } from 'src/constants';
 import * as dayjs from 'dayjs';
-import { BooksStockInterface } from '../books-stock/interfaces/books-stock.interface';
 import { TopSellCategoryInterface } from './interfaces/top-sell-category.interface';
+import { ReportOrderInterface } from './interfaces/report-order.interface';
+import { OrdersHistoryInterface } from './interfaces/orders-history.interface';
+import { OrdersUsersInterface } from './interfaces/orders-users-query.interface';
+import { TopUserBoughtInterface } from './interfaces/top-users-bought.interface';
+import { TopSellerInterface } from './interfaces/top-seller.interface';
+import { OrdersByCategoryInterface } from './interfaces/orders-category.interface';
 
 @Injectable()
 export class OrdersService {
@@ -20,7 +25,7 @@ export class OrdersService {
   async getHistoryByOrder(
     userId: string,
     pagination?: { page: number; perPage: number },
-  ): Promise<Aggregate<any[]>> {
+  ): Promise<Aggregate<OrdersHistoryInterface[]>> {
     const { page, perPage } = pagination;
     const pipeline: PipelineStage[] = [
       {
@@ -79,7 +84,7 @@ export class OrdersService {
     return (await this.getHistoryByOrder(userId, pagination)).length;
   }
 
-  async getOrderByCategory(): Promise<Aggregate<any[]>> {
+  async getOrderByCategory(category: string): Promise<Aggregate<OrdersByCategoryInterface[]>> {
     const pipeline: PipelineStage[] = [
       {
         $lookup: {
@@ -104,10 +109,13 @@ export class OrdersService {
         $unwind: '$book',
       },
       {
+        $match: { 'book.category': category }
+      },
+      {
         $group: {
           _id: '$book.category',
           quantity: { $sum: '$quantity' },
-          total: { $sum: '$total' },
+          totalPrice: { $sum: '$totalPrice' },
           books: {
             $addToSet: {
               bookName: '$book.bookName',
@@ -117,13 +125,13 @@ export class OrdersService {
         },
       },
       {
-        $project: { _id: 0, category: '$_id', quantity: 1, total: 1, books: 1 },
+        $project: { _id: 0, category: '$_id', quantity: 1, totalPrice: 1, books: 1 },
       },
     ];
     return this.ordersModel.aggregate(pipeline);
   }
 
-  async getTopSeller(): Promise<Aggregate<Orders[]>> {
+  async getTopSeller(): Promise<Aggregate<TopSellerInterface[]>> {
     const pipeline: PipelineStage[] = [
       {
         $lookup: {
@@ -257,7 +265,7 @@ export class OrdersService {
   async getUserOrder(pagination?: {
     page;
     perPage;
-  }): Promise<Aggregate<any[]>> {
+  }): Promise<Aggregate<OrdersUsersInterface[]>> {
     const { page, perPage } = pagination;
     const pipeline: PipelineStage[] = [
       {
@@ -362,7 +370,7 @@ export class OrdersService {
   async getTopUserBought(pagination?: {
     page: number;
     perPage: number;
-  }): Promise<Aggregate<any>> {
+  }): Promise<Aggregate<TopUserBoughtInterface[]>> {
     const { page, perPage } = pagination;
     const pipeline: PipelineStage[] = [
       {
@@ -483,7 +491,7 @@ export class OrdersService {
   async getReport(query: {
     startDay: Date;
     endDay: Date;
-  }): Promise<Aggregate<any[]>> {
+  }): Promise<Aggregate<ReportOrderInterface[]>> {
     const { startDay, endDay } = query;
 
     const formattedStartDay = dayjs(startDay).startOf('day');
