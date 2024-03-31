@@ -494,11 +494,8 @@ export class OrdersService {
   }): Promise<Aggregate<ReportOrderInterface[]>> {
     const { startDay, endDay } = query;
 
-    const formattedStartDay = dayjs(startDay).startOf('day');
-    const formattedEndDay = dayjs(endDay).endOf('day');
-
-    const startOfDay = formattedStartDay.toDate();
-    const endOfDay = formattedEndDay.toDate();
+    const startOfDay = dayjs(startDay).startOf('day').toDate();
+    const endOfDay = dayjs(endDay).endOf('day').toDate();
 
     const pipeline: PipelineStage[] = [
       {

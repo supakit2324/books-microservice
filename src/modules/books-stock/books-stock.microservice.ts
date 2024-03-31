@@ -14,6 +14,7 @@ import {
 } from 'src/interfaces/pagination.interface';
 import { FindOptionsInterface } from 'src/interfaces/find-options.interface';
 import { UpdateBooksStockInterface } from './interfaces/update-books-stock.interface';
+import { BooksStockInterface } from './interfaces/books-stock.interface';
 
 @Controller('books-stock')
 export class BooksStockMicroservice {
@@ -192,7 +193,7 @@ export class BooksStockMicroservice {
     cmd: BOOKSSTOCK_CMD,
     method: 'get-running-out',
   })
-  async getRunningOut(@Payload() query: { min: number }): Promise<BooksStock> {
+  async getRunningOut(@Payload() query: { min: number }): Promise<BooksStockInterface> {
     const { min } = query;
     try {
       return await this.booksStockService
