@@ -41,6 +41,7 @@ export class Books extends Document {
   @Prop({
     type: String,
     required: true,
+    index: true,
   })
   category: string;
 

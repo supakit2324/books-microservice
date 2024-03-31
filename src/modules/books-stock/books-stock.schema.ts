@@ -22,6 +22,7 @@ export class BooksStock extends Document {
   @Prop({
     type: String,
     required: true,
+    index: true,
   })
   category: string;
 
