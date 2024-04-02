@@ -8,5 +8,5 @@ interface TopSellCategoryItemInterface {
 
 export interface TopSellCategoryInterface {
     category: string
-    topSeller: [TopSellCategoryItemInterface]
+    topSeller: TopSellCategoryItemInterface[]
 }
