@@ -13,13 +13,13 @@ interface OrdersUsersQueryItemsInterface {
 interface OrdersUsersQueryInterface {
     quantity: number,
     totalPrice: number,
-    books: [OrdersUsersQueryItemsInterface],
+    books: OrdersUsersQueryItemsInterface[],
     userId: string,
 }
 
 export interface OrdersUsersInterface {
     page: number,
     perPage: number,
-    records: [OrdersUsersQueryInterface],
+    records: OrdersUsersQueryInterface[],
     count: number,
 }
